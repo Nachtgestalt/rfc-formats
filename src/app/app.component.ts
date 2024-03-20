@@ -13,7 +13,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { DatePipe } from '@angular/common';
 import { addMinutes, closestTo, differenceInDays, differenceInHours, differenceInMinutes, differenceInSeconds, differenceInWeeks, formatDuration, parse, set } from 'date-fns';
 import { MatIconModule } from '@angular/material/icon';
-import {es} from 'date-fns/locale';
+import { es } from 'date-fns/locale';
 
 
 @Component({
@@ -88,7 +88,6 @@ export class AppComponent {
   }
 
   createActivity(startDate?: any, startTime?: any): FormGroup {
-
     // Validación personalizada para la fecha de inicio
     const startDateValidator = (control: FormControl): { [key: string]: any } | null => {
       if (control.value < this.form.get('startDate')?.value) {
@@ -130,9 +129,6 @@ export class AppComponent {
       let previousActivityEndDate = this.combineDateAndTime(control.at(control.length - 1).get('endDate')?.value, previousActivityEndTime);
 
       control.push(this.createActivity(previousActivityEndDate, previousActivityEndTime))
-
-      console.log('Agregando activity')
-      console.log(control.at(control.length - 1).value)
     }
 
     this.updateEndTime(control.at(control.length - 1)); // Llamada a updateEndTime
@@ -158,7 +154,7 @@ export class AppComponent {
     activityForm.get('endDate')?.valueChanges.subscribe((value: any) => {
       let startDate = activityForm.get('startDate')?.value;
       let endTime = activityForm.get('endTime')?.value
-      activityForm.get('duration')?.setValue(this.calculateDuration(startDate,this.combineDateAndTime(value, endTime)));
+      activityForm.get('duration')?.setValue(this.calculateDuration(startDate, this.combineDateAndTime(value, endTime)));
     });
 
     activityForm.get('startTime')?.valueChanges.subscribe((value: any) => {
@@ -181,11 +177,8 @@ export class AppComponent {
   }
 
   combineDateAndTime(date: Date, time: string): Date {
-    console.log(date, time)
     // Parsea la cadena de tiempo en un objeto de fecha de date-fns
     const parsedTime = parse(time, 'h:mm a', new Date());
-
-    console.log(date, parsedTime)
 
     // Establece la hora y los minutos de la fecha utilizando los valores de la cadena de tiempo
     const combinedDateTime = set(date, {
@@ -193,47 +186,45 @@ export class AppComponent {
       minutes: parsedTime.getMinutes()
     });
 
-    console.log(combinedDateTime)
-
     return combinedDateTime;
   }
 
   calculateDuration(startDate: Date, endDate: Date): string {
-      // Calcular la diferencia total en segundos entre las fechas
-  const durationInSeconds = differenceInSeconds(endDate, startDate);
+    // Calcular la diferencia total en segundos entre las fechas
+    const durationInSeconds = differenceInSeconds(endDate, startDate);
 
-  // Definir los límites para cada unidad de tiempo en segundos
-  const minuteInSeconds = 60;
-  const hourInSeconds = 60 * minuteInSeconds;
-  const dayInSeconds = 24 * hourInSeconds;
-  const weekInSeconds = 7 * dayInSeconds;
+    // Definir los límites para cada unidad de tiempo en segundos
+    const minuteInSeconds = 60;
+    const hourInSeconds = 60 * minuteInSeconds;
+    const dayInSeconds = 24 * hourInSeconds;
+    const weekInSeconds = 7 * dayInSeconds;
 
-  // Determinar la combinación óptima de unidades de tiempo
-  let remainingDuration = durationInSeconds;
-  const weeks = Math.floor(remainingDuration / weekInSeconds);
-  remainingDuration %= weekInSeconds;
-  const days = Math.floor(remainingDuration / dayInSeconds);
-  remainingDuration %= dayInSeconds;
-  const hours = Math.floor(remainingDuration / hourInSeconds);
-  remainingDuration %= hourInSeconds;
-  const minutes = Math.floor(remainingDuration / minuteInSeconds);
+    // Determinar la combinación óptima de unidades de tiempo
+    let remainingDuration = durationInSeconds;
+    const weeks = Math.floor(remainingDuration / weekInSeconds);
+    remainingDuration %= weekInSeconds;
+    const days = Math.floor(remainingDuration / dayInSeconds);
+    remainingDuration %= dayInSeconds;
+    const hours = Math.floor(remainingDuration / hourInSeconds);
+    remainingDuration %= hourInSeconds;
+    const minutes = Math.floor(remainingDuration / minuteInSeconds);
 
-  // Construir el string de la duración
-  let formattedDuration = '';
-  if (weeks > 0) {
-    formattedDuration += `${weeks} semana${weeks !== 1 ? 's' : ''} `;
-  }
-  if (days > 0) {
-    formattedDuration += `${days} día${days !== 1 ? 's' : ''} `;
-  }
-  if (hours > 0) {
-    formattedDuration += `${hours} hora${hours !== 1 ? 's' : ''} `;
-  }
-  if (minutes > 0) {
-    formattedDuration += `${minutes} minuto${minutes !== 1 ? 's' : ''} `;
-  }
+    // Construir el string de la duración
+    let formattedDuration = '';
+    if (weeks > 0) {
+      formattedDuration += `${weeks} semana${weeks !== 1 ? 's' : ''} `;
+    }
+    if (days > 0) {
+      formattedDuration += `${days} día${days !== 1 ? 's' : ''} `;
+    }
+    if (hours > 0) {
+      formattedDuration += `${hours} hora${hours !== 1 ? 's' : ''} `;
+    }
+    if (minutes > 0) {
+      formattedDuration += `${minutes} minuto${minutes !== 1 ? 's' : ''} `;
+    }
 
-  return formattedDuration.trim();
+    return formattedDuration.trim();
   }
 
 }
